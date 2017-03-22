@@ -60,7 +60,7 @@
 
         .UserFunctions a{ 
             text-decoration: none; 
-            color: #318034;
+            color: #f2f2f2;
             font-family: "Arial"; 
             font-size: 18px;
         }      
@@ -307,6 +307,14 @@
             font-size: 20px;
         }
 
+        .floating-box>b {
+            color: White;
+            margin-top: 0px;
+            font-family: "Arial";
+            padding: 10px 10px;
+            font-size: 20px;
+        }
+
         .floating-box>time {
             padding: 1px 5px;
             color: black;
@@ -315,6 +323,55 @@
             text-shadow: none;
             width: auto;
         }
+
+
+        .floating {
+            display: inline-grid;
+            justify-content: center;
+            width: 80%;
+            height: auto;
+            margin: 10px auto;
+            margin-top: 50px;
+            border: 3px solid #777;
+            background-color: #2a2a2a;
+        }
+
+        .floating>h3 {
+            padding: 2px 5px;
+            color: #f2f2f2;
+            margin-top: 0px;
+            font-family: "Arial";
+            font-size: 24px;
+            background-color: #4CAF50;
+            text-shadow: none;
+            width: auto;
+        }
+
+        .floating>p {
+            color: White;
+            margin-top: 0px;
+            font-family: "Arial";
+            padding: 10px 10px;
+            font-size: 20px;
+        }
+
+        .floating>b {
+            color: White;
+            margin-top: 0px;
+            font-family: "Arial";
+            margin-left: 10px;
+            font-size: 20px;
+        }
+
+        .floating>time {
+            padding: 1px 5px;
+            color: white;
+            margin-top: 0px;
+            text-shadow: none;
+            width: auto;
+        }
+
+
 
         .WhyUs {
             font-size: 60px;
@@ -364,7 +421,7 @@
 
         input[type=submit] {
             width: 50%;
-            background-color: #111111;
+            background-color: #4CAF50;
             color: white;
             padding: 14px 20px;
             margin: 8px 0;
@@ -384,7 +441,8 @@
     <ul> 
         <li><a class="active" href="index.php">Главная</a></li> 
         <li><a href="sections.php">Спортивные секции</a></li> 
-        <li><a href="rent.php">Аренда</a></li> 
+        <li><a href="rent.php">Аренда</a></li>
+        <li><a href="actions.php">Мероприятия</a></li>
         <li><a href="contacts.php">Контакты</a></li>
     </ul>
         <div class="TopText">
@@ -431,12 +489,12 @@
 
             <div class="flex-item">
                 <div class="TitleText">
-                    <b>Использование современных технологий.</b>
+                    <b>Активная жизнь спортивного стадиона</b>
                     <hr>
                 </div>
                 <div class="TextInFlex">
-                    <p>"Теплый" стадион в любое время года. Долговечный газон. Удобные раздевалки.</p>
-                    <input type="submit" value="Подробнее.." onclick="javascript:document.location.href='/index.php'">
+                    <p style="margin-top: 60px;">Постоянные мероприятия на стадионе - скучать некогда</p>
+                    <input type="submit" value="Показать список мероприятий" onclick="javascript:document.location.href='/actions.php'">
                 </div>
             </div>
             <div class="flex-item">
@@ -468,8 +526,6 @@
         <time>".$data[$i]['date']."</time>
         </div>";
     }
-
     ?>
-    
 </body>
 </html>

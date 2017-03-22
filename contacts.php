@@ -61,7 +61,7 @@ if(isset($_SESSION['logged_user']) ) : ?>
 
         .UserFunctions a{
             text-decoration: none;
-            color: #318034;
+            color: #f2f2f2;
             font-family: "Arial";
             font-size: 18px;
         }
@@ -103,7 +103,7 @@ if(isset($_SESSION['logged_user']) ) : ?>
     .TopText a{
         margin-top: 0;
         font-family: "Arial";
-        font-size: 130px;
+        font-size: 90px;
         color: #4CAF50;
         text-decoration: none;
         padding: 15px;
@@ -245,6 +245,7 @@ if(isset($_SESSION['logged_user']) ) : ?>
         <li><a href="index.php">Главная</a></li>
         <li><a href="sections.php">Спортивные секции</a></li>
         <li><a href="rent.php">Аренда</a></li>
+        <li><a href="actions.php">Мероприятия</a></li>
         <li><a class="active" href="contacts.php">Контакты</a></li>
     </ul>
     <div class="TopText">
@@ -280,7 +281,7 @@ if(isset($_SESSION['logged_user']) ) : ?>
 
         #wrapper #articles {
             float: left;
-            width: 65%;
+            width: 70%;
             margin-left: 20%;
         }
         #wrapper #articles article {
@@ -297,7 +298,7 @@ if(isset($_SESSION['logged_user']) ) : ?>
 
         #wrapper #articles article img {
             width: 100%;
-            height: 380px;
+            height: 400px;
             border-radius: 300px 300px 300px 300px;
 
         }

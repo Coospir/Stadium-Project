@@ -62,7 +62,7 @@
 
         .UserFunctions a{
             text-decoration: none;
-            color: #318034;
+            color: #f2f2f2;
             font-family: "Arial";
             font-size: 18px;
         }
@@ -150,7 +150,7 @@
         }
         
         
-           input[type=text], select {
+        input[type=text], select {
             color: white;
             font-size: 16px;
             font-family: "Arial";
@@ -185,7 +185,7 @@
             padding: 14px 20px;
             margin: 8px 0;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 18px;
         }
@@ -196,12 +196,12 @@
         
         .AddSection {
             width: 50%;
-            border-radius: 5px;
+            border-radius: 10px;
             background-color: #333;
-            padding: 20px;
+            padding:20px;
             font-family: "Arial";
             display: block;
-            margin-top: 30px;
+            margin-top: 10px;
             color: white;
             position: inherit;
             top:0;
@@ -211,10 +211,11 @@
             margin:auto;
             
         }
+
         div.img {
             margin: 50px;
             border: 2px solid #333;
-            float: center;
+            float: right;
             width: 500px;
             display: inline-block;
             justify-content: center;
@@ -245,7 +246,8 @@
     <ul> 
         <li><a href="index.php">Главная</a></li> 
         <li><a class="active" href="sections.php">Спортивные секции</a></li> 
-        <li><a href="rent.php">Аренда</a></li> 
+        <li><a href="rent.php">Аренда</a></li>
+        <li><a href="actions.php">Мероприятия</a></li>
         <li><a href="contacts.php">Контакты</a></li>
     </ul>
          <div class="TopText">
@@ -349,7 +351,6 @@
 			$section->skill = $data['skill'];
             $section->sport = $data['sport'];
 			R::store($section);
-			mail("evgeniy.agent998@gmail.com", "Test", "test");
 			print "<script language='Javascript' type='text/javascript'>
             alert ('Ваше сообщение отправлено! Спасибо!');
             function reload(){location = 'sections.php'}; 

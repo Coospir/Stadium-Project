@@ -53,7 +53,7 @@
 <style>
     
     body {
-        background-color: #333;
+        background-color: #2a2a2a;
     }
     .LoginForm {
         display: block;
@@ -68,7 +68,7 @@
     .LoginForm p {
         font-family: "Arial";
         font-size: 21px;
-        color: black;
+        color: white;
         
     }
     
@@ -81,31 +81,49 @@
         height: 20px;
         font-size: 16px;
     }
-    
-    .LoginBtn {
-        height: 30px;
-        font-family: "Arial";
-        font-size: 18px;
-        background-color: black;
-        border: 1px solid white;
-        color: white;
-    }
-    
-    .LoginBtn:hover {
+
+    .LoginForm input[type=submit] {
+        width: 40%;
         background-color: #4CAF50;
-		color: black;
-		border: 1px solid black;
-		transition-property: all; 
-        transition-duration: 0.5s; 
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .LoginForm input[type=submit]:hover {
+        background-color: #318034;
     }
 	
 	.LoginForm h1 {
 		font-family: monospace;
-        font-size: 28px;
-        color: white;
-        
+        font-size: 40px;
+        color: #4CAF50;
 	}
-    
+
+    .LoginForm input[type=text]{
+        width: 40%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .LoginForm input[type=password]{
+        width: 40%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
 	
 </style>
 <form class="LoginForm" action="/login.php" method="POST">
@@ -116,12 +134,14 @@
 
 	<p>
 		<p><strong>Пароль</strong></p>
-		<input type="password" name="password" id="pass" value="<?php echo @$data['password'];?>">
+
+    <input type="password" name="password" id="pass" value="<?php echo @$data['password'];?>">
 	</p>
 
-	<p>
-	<button class="LoginBtn" type="submit" name="do_login"><strong>Авторизоваться</strong></button>
-	</p>
-</body>
+    <input type="submit" class="LoginBtn" name="do_login" value="Авторизоваться">
+    <br>
+    <a href="signup.php" style="color: #4CAF50; font-family: Arial;">Не зарегистрированы?</a>
+
 </form>
+</body>
 </html>
