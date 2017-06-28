@@ -26,7 +26,7 @@
 
     <style>
         .navbar{
-            background-color: #ff8c00;
+            background-color: darkorange;
         }
         
         #navbar-brand-text {
@@ -71,85 +71,33 @@
             font-family: 'Ubuntu Mono', monospace; 
         }
         
-        #BtnSections {
-            color: white;
-            font-family: 'Jura', sans-serif;
+        a {
+            color: darkorange;
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 21px; 
         }
-        
-        #BtnRent {
-            color: white;
-            font-family: 'Jura', sans-serif; 
-        }
-        
         .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus {
             color: darkorange;
             background-color: darkorange;
         }
 
-        .container>h3 {
-            color: black;
+        .col-md-4 h2 {
             font-family: 'Ubuntu Mono', monospace;
+            font-size: 32px; 
         }
 
-        .panel-body {
-            font-family: 'Ubuntu Mono', monospace; 
+        .col-md-4 strong {
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 18px; 
+        }
+
+        .col-md-4  {
+            font-family: 'Ubuntu Mono', monospace;
             font-size: 16px;
-            width: auto;
-            height: 50%;
         }
-        
-        .checkbox {
-            width: 30px;
-        }
-        
-        .col-md-4>p {
-            font-family: 'Ubuntu Mono', monospace;  
-            font-size: 20px;
-            height: 10%;
-        }
-        
-        a {
-            font-family: 'Ubuntu Mono', monospace;  
-            font-size: 24px;
-            color: darkorange;
-        }
-
-        a:hover {
-            color: #111;
-            opacity: 0.8;
-        }
-
-        .panel-warning>.panel-heading {
-            font-family: 'Ubuntu Mono', monospace;  
-            font-size: 24px;
-            color: black;
-        }
-
-        .row>h1 {
-            font-family: 'Jura', sans-serif; 
-            font-size: 32px;
-        }
-        
-        
-        #BuyTicket {
-            color: white;
-            font-family: 'Jura', sans-serif;
-            height: 60px;
-            font-size: 32px;
-        }
-    
-        #card {
-            width: 100%;
-            height: 10%;
-        }
-    
-        input[type='checkbox'] {
-            background-color: red;
-            -webkit-appearance: default-button;
-        }
-
-        </style>
+    </style>
 <body>
+
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container-fluid">
@@ -213,71 +161,28 @@
         </div>
     </header>
     <!-- Page Content -->
-    <div class="container">
     <br>
-    <div class="row">
-        <h2 class="featurette-heading">Как приобрести билет на мероприятие?<br>
-                <span class="text-muted">Краткая инструкция.</span>
-            </h2>
-        <br>
-        <br>
-        <br>
-                <div class="col-md-4">
-                    <img src="/img/step1.jpg" class="img-circle" alt="Cinque Terre" width="200" height="200">
-                    <br>
-                    <br>
-                    <p>Ознакомьтесь со списком ближайших концертов/спортивных игр. </p>
-                </div>
-                <div class="col-md-4">
-                    <img src="/img/step2.jpg" class="img-circle" alt="Cinque Terre" width="200" height="200">
-                    <br>
-                    <br>
-                    <p>Выберите подходящий для Вас сектор. </p>
-                </div>
-                <div class="col-md-4">
-                    <img src="/img/step3.jpg" class="img-circle" alt="Cinque Terre" width="200" height="200">
-                    <br>
-                    <br>
-                    <p>Оформите бронь билета, введя контактные данные. Попробуйте сами!</p>
-                </div>
+    <div class="container">
+    <div class="row-fluid">
+        <div class="col-md-8">
+            <iframe width="100%" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBfIIbGnZpc2LXEIMWGbWpmdefJIBn4-jA
+            &q=Костомаровская набережная 29, Москва" allowfullscreen></iframe>
         </div>
-    <div class="container" id="panel">
-        <br>
-        <br>
-        <br>
-        <h2 class="featurette-heading">Ближайшие события на стадионе.
-        </h2>
-        <hr>
-        <br>
-        <div class="row">
-        <?php
-            $db = new PDO("mysql:dbname=Stadium_Site;host=127.0.0.1", "root", "");
-            $db->exec("SET NAMES utf8");
-            $actions = $db->query("SELECT * FROM actions ORDER BY date ASC")->fetchAll(PDO::FETCH_ASSOC);
-            for($i = 0; $i < count($actions); $i++){
-                echo "
-                    <div class='col-md-4'>
-                        <form role='form' class='form-horizontal' method='post' action='buy_ticket.php'>
-                            <div class='panel panel-warning' id='card'>
-                                    <div class='panel-heading'>
-                                        ".$actions[$i]['title']."
-                                    </div>
-                                    <div class='panel-body'>
-                                        <p>".$actions[$i]['description']."</p>
-                                        <br>
-                                        <p><b><i>Когда: ".date_format(new DateTime($actions[$i]['date']),"d.m.Y")."</i></b></p>
-                                        <br>
-                                        <a href='buy_ticket.php?id=".$actions[$i]['id_action']."'>Бронировать билет</a>
-                                    </div>
-                            </div>
-                        </form>
-                    </div>
-                ";
-            }
-          ?>
+        
+        <div class="col-md-4">
+            <h2>Наши контакты</h2>
+            <address>
+                <strong>Стадион "УКиТ"</strong><br>
+                г. Москва<br>
+                Костомаровская наб., д.29<br>
+                E-Mail: <b>priemka@mgkit.ru"></b><br>
+                105120<br>
+                <abbr title="Наш телефон">Телефон:</abbr> <b>8(925)743-11-91</b>
+            </address>
         </div>
     </div>
-        <!-- Footer -->
+
+    <!-- Footer -->
         <footer>
             <div class="row">
                 <div class="col-lg-12">
@@ -287,7 +192,7 @@
             </div>
         </footer>
     </div>
-
+</div>
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
 

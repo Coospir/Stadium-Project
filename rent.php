@@ -1,450 +1,349 @@
-<?php
-	require "db.php";
-    session_start();
-	if(isset($_SESSION['logged_user']) ) : ?>
-	<style>
-		
-		
-		.flex-container {
-			display: flex;
-			justify-content: space-around;
-			border-radius: 10px;
-		}
-		.flex-item {
-			padding: 5px;
-			border-radius: 1px;
-			background: #111;
-			text-align: center; 
-            color: white;
-			height: 20px;
-			font-family: "Arial"; 
-		}
-		
-		.flex-item a {
-			text-decoration: none;
-            text-align: left;
-			color: #4CAF50;
-			font-family: "Arial"; 
-		}
+<?php 
+    session_start(); 
+    require_once "db.php";   
 
-	</style>
+     if (!empty($_POST['Save'])) {
+        $places = $_POST['s_places'];
+        $sn = $_POST['sn'];
+        $fn = $_POST['fn'];
+        $tel = $_POST['tel'];
+        $email = $_POST['email'];
+        $price = $_POST['r_price'];
 
-	  <div class="flex-container">
-		<div class="flex-item">
-		  Добро пожаловать, <?php echo $_SESSION['logged_user']->login; ?>
-		  <a href='/logout.php'>Выйти</a>
-		</div>
-	  </div>
-	<?else:?>
-    <style>
-        .UserFunctions ul{
-            background-color: #111;
-            display: block;
-            justify-content: center;
-            padding: 5px;
+        $add = $pdo->prepare("call NewRenting(:user_id, :m_surname, :m_name, :m_phone, :m_email, :m_cost)");
+
+        $add->bindValue(":user_id", $_SESSION['user_id']);
+        $add->bindValue(":m_surname", $sn);
+        $add->bindValue(":m_name", $fn);
+        $add->bindValue(":m_phone", $tel);
+        $add->bindValue(":m_email", $email);
+        $add->bindValue(":m_cost", $price);
+
+        if ($add->execute()) {
+            $success = '<div class = "alert alert-success">Операция аренды прошла успешно! <a href="index.php">На главную.</a></div>';
+        } else {
+            $error = '<div class = "alert alert-danger">Ошибка: проверьте данные!</div>';    
         }
+    }
 
-        .UserFunctions ul li{
-            list-style: none;
-            padding: 15px;
-            transition-property: all;
-            transition-duration: 0.5s;
-
-        }
-
-        .UserFunctions ul li:hover{
-            сolor: white;
-        }
-
-        .UserFunctions{
-            width: 10%;
-        }
-
-        .UserFunctions a{
-            text-decoration: none;
-            color: #f2f2f2;
-            font-family: "Arial";
-            font-size: 18px;
-        }
-
-        .UserFunctions a:hover {
-            color: white;
-        }
-        
-    </style>
-		<div class="UserFunctions">
-            <ul>
-            <li><a href='/login.php'>Вход в систему</a></li>
-            </ul>
-        </div>
-	<?endif;?>
-
+?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Стадион УКИТ</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Стадион УКиТ</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Jura|Ubuntu+Mono" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/one-page-wonder.css" rel="stylesheet">
+
 </head>
-<body>
-    <style> 
-       
-        .TopText{
-			margin-top: 10px;
-            font-family: "Arial";
-            font-size: 90px;
-            color: #4CAF50;
-            text-decoration: none;
-            
+
+    <style>
+        .navbar{
+            background-color: darkorange;
         }
         
-        .TopText a{
-			margin-top: 0;
-            font-family: "Arial";
-            font-size: 90px;
-            color: #4CAF50;
-            text-decoration: none;
-            padding: 15px;
-            
-        }
-        
-        .TopText a:hover{
+        #navbar-brand-text {
             color: white;
-            transition-property: all; 
-			transition-duration: 0.5s; 
-        }
-    
-        body  { 
-            background-color: #111;
-            
-        } 
-
-       
-        .menu ul {
-            list-style-type: none;
-            margin-top: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #333;
-            align-content: left;
-        }
-
-        .menu li {
-            float: left;
-        }
-
-        .menu li a {
-            display: block;
-            color: white;
-            font-family: "Arial";
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            font-size: 24px;
-        }
-
-        .menu li a:hover:not(.active) {
-            background-color: #2a2a2a;
-        }
-
-        .active {
-            background-color: #4CAF50;
-        }
-        
-		
-        
-        
-        .floating-box {
-            display: inline-table;
-            width: 400px;
-            height: auto;
-            margin: 10px;
-            border: 3px solid #4CAF50;  
-        }
-       
-
-
-		.floating-box>h3 {
-			padding: 2px 5px;
-			color: white;
-			margin-top: 0px;
-            font-family: "Arial";
-            font-size: 24px;
-			background-color: #4CAF50;
-			text-shadow: none;
-			width: auto;
-		}
-
-		.floating-box>p {
-			color: White;
-			margin-top: 0px;
-            font-family: "Arial";
-			padding: 10px 10px;
+            font-family: 'Jura', sans-serif;
             font-size: 20px;
-		}
-
-		.floating-box>time {
-			padding: 1px 5px;
-			color: black;
-			margin-top: 0px;
-			background-color: #4CAF50;
-			text-shadow: none;
-			width: auto;
-		}
-
-        input[type=text], select {
+        }
+        
+        #bs-example-navbar-collapse-1 a{
+            color: black;
+            font-family: 'Jura', sans-serif;
+            font-size: 18px;
+        }
+        
+        #bs-example-navbar-collapse-1 a:active{
             color: white;
-            font-size: 16px;
-            font-family: "Arial";
-            background-color: #666;
-            width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #111;
-            border-radius: 4px;
-            box-sizing: border-box;
+            font-family: 'Jura', sans-serif;
+            font-size: 18px;
+        }
+        
+        #bs-example-navbar-collapse-1 a:hover{
+            color: white;
+        }
+        
+        #text-on-top{
+            color: black;
+            font-family: 'Ubuntu Mono', monospace;
+            opacity: 0.8;
+        }
+        
+        .header-image {
+             background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+        }
+        
+        .featurette-heading {
+             color: black;
+             font-family: 'Ubuntu Mono', monospace; 
+        }
+        
+        .lead {
+            color: black;
+            font-family: 'Ubuntu Mono', monospace; 
+        }
+        
+        .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus {
+            color: darkorange;
+            background-color: darkorange;
         }
 
-        input[type=date], select {
+        #Scene {
             color: white;
-            font-size: 16px;
-            font-family: "Arial";
-            background-color: #666;
-            width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #111;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        input[type=email], select {
-            background-color: #666;
-            color: white;
-            font-size: 16px;
-            font-family: "Arial";
-            width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #111;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        input[type=submit] {
-            width: 100%;
-            background-color: #4CAF50;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            font-family: 'Jura', sans-serif;
+            height: 50px;
             font-size: 18px;
         }
 
-        input[type=submit]:hover {
-            background-color: #318034;
-        }
-
-        .AddSection {
-            width: 50%;
-            border-radius: 10px;
-            background-color: #333;
-            padding:20px;
-            font-family: "Arial";
-            display: block;
-            margin-top: 10px;
+        #Pole {
             color: white;
-            position: inherit;
-            top:0;
-            bottom:0;
-            left:0;
-            right:0;
-            margin:auto;
+            font-family: 'Jura', sans-serif;
+            height: 40px;
+            font-size: 18px;
+            width: 60%;
         }
 
-        div.img {
-            margin: 50px;
-            border: 2px solid #333;
-            float: left;
-            width: 500px;
-            display: inline-block;
-            justify-content: center;
-
-
+        .col-md-5 {
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 18px; 
         }
 
-        div.img:hover {
-            border: 2px solid #4CAF50;
-        }
-
-        div.img img {
-            width: 100%;
-            height: auto;
-        }
-
-        div.desc {
-            padding: 15px;
-            text-align: center;
+        #Tennis {
             color: white;
-            font-family: "Arial";
+            font-family: 'Jura', sans-serif;
+            height: 40px;
+            font-size: 18px;
+            width: 60%;
         }
-        
-    </style>  
 
-    <div class="menu"> 
-    <ul> 
-        <li><a href="index.php">Главная</a></li> 
-        <li><a href="sections.php">Спортивные секции</a></li> 
-        <li><a class="active" href="rent.php">Аренда</a></li>
-        <li><a href="actions.php">Мероприятия</a></li>
-        <li><a href="contacts.php">Контакты</a></li>
-    </ul>
-        <div class="TopText">
-            <p align="center"><a href="" style="text-decoration: none">Аренда площади</a></p>
-        </div>
-
-
-        <div class="img">
-            <a target="_blank" href="http://biofile.ru/chel/14684.html">
-                <img src="/img/1.jpg" alt="Training" width="300" height="200">
-            </a>
-            <div class="desc"><b style="color:#4CAF50">Спортивное поле</b>
-                <p><b>Размеры: </b> 105x68 метров.</p> <p>Стоимость: 12.000 руб</p>
-
-            </div>
-        </div>
-
-
-
-        <div class="img">
-            <a target="_blank" href="https://ru.wikipedia.org/wiki/Футбол">
-                <img src="http://mw2.google.com/mw-panoramio/photos/medium/72613496.jpg" alt="Football" width="300" height="200">
-            </a>
-            <div class="desc"><b style="color:#4CAF50">Сцена на поле</b>
-                <p><b>Размеры: </b> 10x10 метров.</p> <p>Стоимость: 9.000 руб</p>
-
-            </div>
-        </div>
-        <div class="img">
-            <a target="_blank" href="https://ru.wikipedia.org/wiki/Теннис">
-                <img src="http://lit.govuadocs.com.ua/tw_files2/urls_116/60/d-59030/59030_html_m5df505f9.png" alt="Tennis" width="300" height="200">
-            </a>
-            <div class="desc"><b style="color:#4CAF50">Вся площадь стадиона</b>
-                <p><b>Размеры: </b> 105x68 + 10x10 метров.</p> <p>Стоимость: 15.000 руб (выгода 6.000 рублей!) </p>
-
-            </div>
-        </div>
-        <div class="TopText">
-            <p align="center">Заполнение данных для аренды площади</p>
-        </div>
-
-        <?php
-        $data = $_POST;
-        if( isset($data['send_info']))
-        {
-            // Здесь регистрация
-            $errors = array();
-
-            if( $data['lastname'] == '')
-            {
-                $errors[] = 'Введите фамилию!';
-            }
-
-            if( $data['firstname'] == '')
-            {
-                $errors[] = 'Введите имя!';
-            }
-
-            if( $data['patronymic'] == '')
-            {
-                $errors[] = 'Введите отчество!';
-            }
-
-
-            if( $data['email'] == '')
-            {
-                $errors[] = 'Введите E-Mail!';
-            }
-
-            if( $data['rentobject'] == '')
-            {
-                $errors[] = 'Выберите объект!';
-            }
-
-            if( $data['date'] == '')
-            {
-                $errors[] = 'Выберите дату аренды!';
-            }
-
-            if(!isset($_SESSION['logged_user']))
-            {
-                $errors[] = 'Сначала зайдите на сайт!';
-                print "<script language='Javascript' type='text/javascript'>
-            alert ('Чтобы арендовать объект нужно войти на сайт!');
-            function reload(){location = 'rent.php'}; 
-            setTimeout('reload()', 0);
-            </script>";
-            }
-
-            if(empty($errors) && (isset($_SESSION['logged_user'])))
-            {
-                // Все отлично, регистрируем
-                $rent = R::dispense('renting');
-                $rent->lastname = $data['lastname'];
-                $rent->firstname = $data['firstname'];
-                $rent->patronymic = $data['patronymic'];
-                $rent->email = $data['email'];
-                $rent->rentobject = $data['rentobject'];
-                $rent->date = $data['date'];
-                R::store($rent);
-                print "<script language='Javascript' type='text/javascript'>
-            alert ('Ваша заявка отправлена! Спасибо!');
-            function reload(){location = 'rent.php'}; 
-            setTimeout('reload()', 0);
-            </script>";
-
-            } else
-
-            {
-                echo '<div style="color: red; text-align: center;"><b>'.array_shift($errors).'</b></div><hr>';
-            }
-
+        .col-md-11>h3 {
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 32px; 
         }
-        ?>
 
-        <div class="AddSection" style="">
-            <form action="/rent.php" method="POST">
+        .col-md-11>p,b {
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 16px; 
+        }
 
-                <label for="lname">Ваша фамилия </label>
-                <input type="text" id="lname" name="lastname" required value="<?php echo @$data['lastname']; ?>">
+        #Success {
+            color: white;
+            font-family: 'Ubuntu Mono', monospace; 
+            font-size: 18px;
+        }
 
-                <label for="fname">Ваше имя</label>
-                <input type="text" id="fname" name="firstname" required value="<?php echo @$data['firstname']; ?>">
+        h3 {
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 21px; 
+        }
 
-                <label for="pname">Ваше отчество </label>
-                <input type="text" id="pname" name="patronymic" required value="<?php echo @$data['patronymic']; ?>">
+        #myModalLabel {
+            font-family: 'Jura', sans-serif;
+            font-size: 32px; 
+        }
+    </style>
+<body>
 
-                <label for="email">Электронная почта</label>
-                <input type="email" id="em" name="email" required value="<?php echo @$data['email']; ?>">
-
-                <label for="rentobject">Укажите объект для аренды</label>
-                <select id="rentobject" name="rentobject" required value="<?php echo @$data['rentobject']; ?>">
-                    <option value="pole">Спортивное поле</option>
-                    <option value="scene">Сцена на поле</option>
-                    <option value="stadium">Вся площадь стадиона</option>
-                </select>
-
-                <label for="date">Дата аренды</label>
-                <input type="date" id="date" name="date"/>
-
-                <input type="submit" value="Отправить" name="send_info">
-            </form>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" id="navbar-brand-text" href="index.php">ukit-stadium.ru</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav" id="navbar-nav">
+                    <li>
+                        <a href="index.php">Главная</a>
+                    </li>
+                    <li>
+                        <a href="news.php">Новости</a>
+                    </li>
+                    <li>
+                        <a href="actions.php">Мероприятия</a>
+                    </li>
+                    <li>
+                        <a href="sections.php">Спортивные секции</a>
+                    </li>
+                     <li>
+                        <a href="rent.php">Аренда</a>
+                    </li>
+                    <li>
+                        <a href="about.php">Контакты</a>
+                    </li>
+                </ul>
+                <?php
+                    if (isset($_SESSION['logged_user'])) {
+                ?>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
+                </ul>
+                <?php } else { ?>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="authorize.php"><span class="glyphicon glyphicon-log-in"></span> Войти</a></li>
+                </ul>   
+                <?php } ?>
+            </div>
+            <!-- /.navbar-collapse -->
         </div>
-    </div> 
-  
-    
-</body>
-</html>
+        <!-- /.container -->
+    </nav>
+    <!-- Full Width Image Header -->
+    <header class="header-image">
+        <div class="headline">
+            <div class="container" id="text-on-top">
+                <h1>Стадион "УКиТ"</h1>
+            </div>
+        </div>
+    </header>
+    <!-- Page Content -->
+    <div class="container-fluid">
+        <div class="container">
+            <br>
+            <?php echo $success; ?>
+            <?php echo $error; ?>
+            <div class="row">
+                <h2 class="featurette-heading">Аренда стадиона УКиТ.<br>
+                </h2>
+                <hr>
+                <br>
+                <div class="col-md-11">
+                    <div class="col-md-4">
+                        <img src="/img/1.jpg" class="img-thumbnail" alt="Стадион УКИТ" width="500" height="500">
+                        <br>
+                        <br>
+                        <img src="/img/2.jpg" class="img-thumbnail" alt="Стадион УКИТ" width="500" height="500">
+                        <br>
+                        <br>
+                    </div>
+                    <h3>Описание</h3>
+                    <p>Колледж УКиТ предлагает в аренду искуственное футбольное поле с электрическим подогревом для тренировок и проведения мероприятий в любую погоду и время года.
+                    <br>В темное время суток обеспечивается современное освещение согласно общепринятых спортивных норм.
+                    <br>Система автоматического электрического подогрева поддерживает постоянную положительную температуру на поверхности газона, при любой погоде газон свободен ото льда, снега и воды, 
+                    что предохраняет как профессиональных игроков, так и начинающих футболистов от травматизма и доставляет радость от любимой игры.
+                    <br>Игровое поле размером 60х40 метров имеет двое ворот для игры на всем поле, а также по двое ворот для игры на каждой из половин поля (40х30).
+                    <br>После футбольного матча или тренировки спортсменов ждут сауна со шведским оборудованием, комната отдыха, удобные раздевалки и душевые. Уютная атмосфера и домашняя обстановка располагают к отличному отдыху.
+                    <br>Для проведения мероприятий на стадионе присутствует рубка Ди-Джея, где стоит звуковая и световая аппаратура. </p>
+                    <b>Стоимость: 1500 руб./час. </b>  <br> <br>
+                    <button type="button" class="btn btn-warning btn-block" data-toggle="modal" data-target="#myModal" id='Success' name='Success'>
+                        Оставить заявку
+                    </button>
+                    <br>
+                </div>
+            </div>
+            <!-- Кнопка, открывающее модальное окно -->
+             
+            <!-- Модальное окно -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+                      <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Аренда стадиона УКиТ.</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>Общие данные</p>
+                    <form role='form' class='form-horizontal' method='post'>
+                        <div class='input-group'>
+                                    <span class='input-group-addon'><i class='glyphicon glyphicon'></i></span>
+                                    <input id='Surname' type='text' class='form-control' name='sn' placeholder='Фамилия' required>
+                                </div>
+                                <br>
+                                <div class='input-group'>
+                                    <span class='input-group-addon'><i class='glyphicon glyphicon'></i></span>
+                                    <input id='Name' type='text' class='form-control' name='fn' placeholder='Имя' required>
+                                </div>
+                                <br>
+                                <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+                                    <script src='js/maskedinput.js'></script>
+                                    <script type='text/javascript'>
+                                        jQuery(function($){
+                                            $('#phone').mask('+7 (999) 999-99-99');
+                                        });
+                                    </script>
+                                <div class='input-group'>
+                                    <span class='input-group-addon'><i class='glyphicon glyphicon'></i></span>
+                                    <input id='phone' type='phone' class='form-control' name='tel' placeholder='Мобильный телефон'>
+                                </div>
+                                <br>
+                                <div class='input-group'>
+                                    <span class='input-group-addon'><i class='glyphicon glyphicon'></i></span>
+                                    <input id='email' type='email' class='form-control' name='email' placeholder='E-Mail'>
+                                </div>
+                                <br>
+                                <p>Количество часов</p>
+                                <div class="input-group">
+                                    <span class='input-group-addon'><i class='glyphicon glyphicon'></i></span>
+                                    <input id='number' type="number" min="1" value="1" max="12" name="hours_for_rent"class="form-control">
+                                </div>
+                                <input type="hidden" value="" name="r_price">
+                                <h3 id="price">Общая стоимость: <?= 1500 ?>руб.</h3>
+                                <script type="text/javascript">
+
+                                    $("[name='hours_for_rent']").change(function(){
+                                        var hours = $(this).val();
+                                        var price = <?= 1500 ?> * hours;
+                                        $("#price").text("Общая стоимость: " + price + " руб.");
+                                        $("[name='r_price']").attr("value", price);
+                                    });
+
+                                </script>
+                                <hr>
+                                <input type='submit' class='btn btn-warning btn-block' id='Save' name='Save' value='Подтвердить данные'>
+                    </div>
+                    </form>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+            </div> 
+            <!-- Footer -->
+            <footer>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <hr>
+                        <p>Copyright &copy; Eugene Starodubov, Ruslan Mamedbekov, 2017</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        </div>
+        </div>
+
+        <!-- jQuery -->
+        <script src="js/jquery.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="js/bootstrap.min.js"></script>
+
+    </body>
+
+    </html>

@@ -1,7 +1,15 @@
 <?php 
-    session_start();    
-?>
+    session_start();  
+    require_once "db.php";
 
+    $data = $pdo->prepare("select * from ActionsPlacesUsers apu INNER JOIN actions a ON apu.action_id=a.id_action WHERE apu.id_user=:u");
+    $data->bindValue(":u", $_SESSION['user_id']);
+
+    if ($data->execute()) {
+        $user_data = $data->fetchAll(PDO::FETCH_ASSOC)[0]; 
+    }
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,7 +34,7 @@
 
     <style>
         .navbar{
-            background-color: #ff8c00;
+            background-color: darkorange;
         }
         
         #navbar-brand-text {
@@ -71,85 +79,28 @@
             font-family: 'Ubuntu Mono', monospace; 
         }
         
-        #BtnSections {
-            color: white;
-            font-family: 'Jura', sans-serif;
+        #NoAccount {
+            color: darkorange;
+            font-family: 'Jura', sans-serif;   
         }
         
-        #BtnRent {
+        #LogIn {
             color: white;
             font-family: 'Jura', sans-serif; 
         }
         
+        .panel-heading {
+            color: darkorange;
+            font-family: 'Jura', sans-serif;
+            font-size: 18px;
+        }
         .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus {
             color: darkorange;
             background-color: darkorange;
         }
-
-        .container>h3 {
-            color: black;
-            font-family: 'Ubuntu Mono', monospace;
-        }
-
-        .panel-body {
-            font-family: 'Ubuntu Mono', monospace; 
-            font-size: 16px;
-            width: auto;
-            height: 50%;
-        }
-        
-        .checkbox {
-            width: 30px;
-        }
-        
-        .col-md-4>p {
-            font-family: 'Ubuntu Mono', monospace;  
-            font-size: 20px;
-            height: 10%;
-        }
-        
-        a {
-            font-family: 'Ubuntu Mono', monospace;  
-            font-size: 24px;
-            color: darkorange;
-        }
-
-        a:hover {
-            color: #111;
-            opacity: 0.8;
-        }
-
-        .panel-warning>.panel-heading {
-            font-family: 'Ubuntu Mono', monospace;  
-            font-size: 24px;
-            color: black;
-        }
-
-        .row>h1 {
-            font-family: 'Jura', sans-serif; 
-            font-size: 32px;
-        }
-        
-        
-        #BuyTicket {
-            color: white;
-            font-family: 'Jura', sans-serif;
-            height: 60px;
-            font-size: 32px;
-        }
-    
-        #card {
-            width: 100%;
-            height: 10%;
-        }
-    
-        input[type='checkbox'] {
-            background-color: red;
-            -webkit-appearance: default-button;
-        }
-
-        </style>
+    </style>
 <body>
+
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container-fluid">
@@ -178,11 +129,11 @@
                     <li>
                         <a href="sections.php">Спортивные секции</a>
                     </li>
-                     <li>
+                    <li>
                         <a href="rent.php">Аренда</a>
                     </li>
                     <li>
-                        <a href="contacts.php">Контакты</a>
+                        <a href="about.php">Контакты</a>
                     </li>
                 </ul>
                 <?php
@@ -204,7 +155,6 @@
         </div>
         <!-- /.container -->
     </nav>
-    <!-- Full Width Image Header -->
     <header class="header-image">
         <div class="headline">
             <div class="container" id="text-on-top">
@@ -214,69 +164,24 @@
     </header>
     <!-- Page Content -->
     <div class="container">
-    <br>
-    <div class="row">
-        <h2 class="featurette-heading">Как приобрести билет на мероприятие?<br>
-                <span class="text-muted">Краткая инструкция.</span>
-            </h2>
         <br>
-        <br>
-        <br>
-                <div class="col-md-4">
-                    <img src="/img/step1.jpg" class="img-circle" alt="Cinque Terre" width="200" height="200">
-                    <br>
-                    <br>
-                    <p>Ознакомьтесь со списком ближайших концертов/спортивных игр. </p>
-                </div>
-                <div class="col-md-4">
-                    <img src="/img/step2.jpg" class="img-circle" alt="Cinque Terre" width="200" height="200">
-                    <br>
-                    <br>
-                    <p>Выберите подходящий для Вас сектор. </p>
-                </div>
-                <div class="col-md-4">
-                    <img src="/img/step3.jpg" class="img-circle" alt="Cinque Terre" width="200" height="200">
-                    <br>
-                    <br>
-                    <p>Оформите бронь билета, введя контактные данные. Попробуйте сами!</p>
-                </div>
+        <div class="panel panel-warning">
+          <div class="panel-heading"><b>Личный кабинет пользователя</b></div>
+              <div class="panel-body">
+                    <i>Общая информация о пользователе</i>
+                    <hr>
+                    <p><b>Логин пользователя: </b><?php echo $_SESSION['logged_user']; ?></p>
+                    <p><b>Электронный адрес аккаунта: </b><?php echo $_SESSION['user_email']; ?></p>
+                    <p><b>Мобильный телефон: </b> <?php echo $_SESSION['user_phone']; ?> </p>
+                    <hr>
+                    <p><i>Дополнительная информация о пользователе</i></p>
+                    <p><b>Фамилия: </b> <?php echo $_SESSION['user_surname']; ?> 
+                    <p><b>Имя: </b> <?php echo $_SESSION['user_name']; ?> 
+                    <p><b>Отчество: </b> <?php echo $_SESSION['user_patronymic']; ?> 
+                    <p><b>Спортивные секции: </b></p>
+                    <p><b>Купленные билеты: </b><?= "куплен билет на мероприятие: ".$user_data['title']." - (".date_format(new DateTime($user_data['date']),"d.m.Y").")." ?></p>
+              </div>
         </div>
-    <div class="container" id="panel">
-        <br>
-        <br>
-        <br>
-        <h2 class="featurette-heading">Ближайшие события на стадионе.
-        </h2>
-        <hr>
-        <br>
-        <div class="row">
-        <?php
-            $db = new PDO("mysql:dbname=Stadium_Site;host=127.0.0.1", "root", "");
-            $db->exec("SET NAMES utf8");
-            $actions = $db->query("SELECT * FROM actions ORDER BY date ASC")->fetchAll(PDO::FETCH_ASSOC);
-            for($i = 0; $i < count($actions); $i++){
-                echo "
-                    <div class='col-md-4'>
-                        <form role='form' class='form-horizontal' method='post' action='buy_ticket.php'>
-                            <div class='panel panel-warning' id='card'>
-                                    <div class='panel-heading'>
-                                        ".$actions[$i]['title']."
-                                    </div>
-                                    <div class='panel-body'>
-                                        <p>".$actions[$i]['description']."</p>
-                                        <br>
-                                        <p><b><i>Когда: ".date_format(new DateTime($actions[$i]['date']),"d.m.Y")."</i></b></p>
-                                        <br>
-                                        <a href='buy_ticket.php?id=".$actions[$i]['id_action']."'>Бронировать билет</a>
-                                    </div>
-                            </div>
-                        </form>
-                    </div>
-                ";
-            }
-          ?>
-        </div>
-    </div>
         <!-- Footer -->
         <footer>
             <div class="row">

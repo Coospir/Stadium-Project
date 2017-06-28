@@ -1,191 +1,305 @@
 <?php
+    session_start();
+    require_once 'db.php';
+    require_once "mail/PHPMailerAutoload.php";
 
-	require "db.php";
-	
-	$data = $_POST;
-	if( isset($data['do_signup']))
-	{
-		// Здесь регистрация
-		$errors = array();
-
-		if( trim($data['login'] == ''))
-		{
-			$errors[] = 'Введите логин!';
-		}
-
-        if( trim($data['email'] == ''))
-        {
-            $errors[] = 'Введите E-Mail!';
+    if(isset($_POST['Register'])){
+        $login = !empty($_POST['login']) ? trim($_POST['login']) : null;
+        $pass = !empty($_POST['password']) ? trim($_POST['password']) : null;
+        $phone = !empty($_POST['phone']) ? trim($_POST['phone']) : null;
+        $email = !empty($_POST['email']) ? trim($_POST['email']) : null;
+        $surname = !empty($_POST['surname']) ? trim($_POST['surname']) : null;
+        $name = !empty($_POST['name']) ? trim($_POST['name']) : null;
+        $patronymic = !empty($_POST['patronymic']) ? trim($_POST['patronymic']) : null;   
+        
+        // Проверяем логин
+        $user_exist = "SELECT * FROM users WHERE login = :login";
+        $stmt = $pdo->prepare($user_exist);
+        $stmt ->bindValue(':login', $login);
+        $stmt -> execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if(!preg_match("/^[a-zA-Z0-9]+$/",$_POST['login'])){
+            $error = '<div class = "alert alert-danger">Ошибка: логин может состоять только из букв английского алфавита и цифр!</div>';
         }
 
-        if( $data['password'] == '')
-        {
-            $errors[] = 'Введите пароль!';
+        if(strlen($_POST['login']) <= 3 or strlen($_POST['login']) > 30) {
+           $error = '<div class = "alert alert-danger">Ошибка: логин должен быть не менее 3-х символов и не больше 30 символов!</div>'; 
         }
 
-        if( $data['password_2'] != $data['password'])
-        {
-            $errors[] = 'Повторный пароль введен неверно!';
+        if($row){
+            $error = '<div class = "alert alert-danger">Ошибка: пользователь с таким логином уже существует!</div>';
         }
-
-		if( $data['surname'] == '')
-		{
-			$errors[] = 'Введите Вашу фамилию!';
-		}
-		
-		if( $data['name'] == '')
-		{
-			$errors[] = 'Введите Ваше имя!';
-		}
-		
-		if( $data['patronymic'] == '')
-		{
-			$errors[] = 'Введите Ваше отчество!';
-		}
-
-		if( R::count('users', 'login = ?', array($data['login'])) > 0 )
-		{
-			$errors[] = 'Пользователь с таким логином уже существует!';
-		}
-
-		if( R::count('users', 'email = ?', array($data['email'])) > 0 )
-		{
-			$errors[] = 'Пользователь с таким E-Mail уже существует!';
-		}
-
-		if(empty($errors))
-		{
-			// Все отлично, регистрируем
-			$user = R::dispense('users');
-			$user->login = $data['login'];
-			$user->surname = $data['surname'];
-			$user->name = $data['name'];
-			$user->patronymic = $data['patronymic'];
-			$user->email = $data['email'];
-			$user->password = password_hash($data['password'], PASSWORD_DEFAULT);
-            mail($data['email'], $data['login'], "Тест");
-			R::store($user);
-            print "<script language='Javascript' type='text/javascript'>
-            alert ('Регистрация прошла успешно! Переход на главную.');
-            function reload(){location = 'index.php'}; 
-            setTimeout('reload()', 0);
-            </script>";
-
-        } else
-
-        {
-            echo '<div style="font-family: Arial; color: red; text-align: center;"><b>'.array_shift($errors).'</b></div><hr>';
+        
+        //Проверяем почту
+        
+        $email_exist = "SELECT * FROM users WHERE email = :email";
+        $stmt = $pdo->prepare($email_exist);
+        $stmt ->bindValue(':email', $email);
+        $stmt -> execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if($row){
+            $error = '<div class = "alert alert-danger">Ошибка: пользователь с таким E-Mail уже существует!</div>';
         }
-	}
+    
+        if(!$error){
+            $sql = "call UserRegister(:login, :surname, :name, :patronymic, :email, :phone, :password)";
+            $stmt = $pdo->prepare($sql);
+            $stmt -> bindValue(':login', $login);
+            $stmt -> bindValue(':surname', $surname);
+            $stmt -> bindValue(':name', $name);
+            $stmt -> bindValue(':patronymic', $patronymic);
+            $stmt -> bindValue(':email', $email);
+            $stmt -> bindValue(':phone', $phone);
+            $stmt -> bindValue(':password', md5($pass));
+
+            $result = $stmt->execute();
+
+            if(($result) && (!$row))
+            {
+                $success = '<div class = "alert alert-success">Регистрация прошла успешно! <a href="authorize.php">Авторизируйтесь.</a></div>';
+
+                $mail = new PHPMailer;
+
+                $mail->addAddress($email);
+                $mail->Subject = "Спасибо за регистрацию на ukit-stadium.ru!";
+                $mail->Body = "<p>Ваши данные для регистрации: </p><br>
+                                <b>Логин: </b> $login, <br>
+                                <b>Пароль: </b> $pass, <br>
+                                <hr>
+                                <b>Фамилия: </b> $surname, <br>
+                                <b>Имя: </b> $name, <br>
+                                <b>Отчество: </b> $patronymic, <br>
+                                <b>Контакнтый телефон: </b> $phone.";
+                $mail->isHtml(true);
+
+                if ($mail->send()) {
+                    $success .= '<div class = "alert alert-success">На электронный '.$email.' адрес отправлена информация об аккаунте.</div>';
+                } else {
+                    $error .= '<div class = "alert alert-danger">Ошибка!</div>';
+                }
+
+            } 
+        }
+    }
 
 ?>
-<style>
-    body {
-        background-color: #2a2a2a;
-    }
 
-    .RegForm {
-        display: inline-block;
-        justify-content:space-around;
-        text-align: left;
-        width: auto;
-        margin-top: auto;
-        margin-left: 550px;
-        margin-right: 550px;
-        margin-bottom: auto;
-    }
+<!DOCTYPE html>
+<html lang="en">
 
-    .RegForm p {
-        font-family: "Arial";
-        font-size: 14px;
-        color: white;
-    }
+<head>
 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
+    <title>Стадион УКиТ</title>
 
-    .RegForm input[type=submit] {
-        width: 100%;
-        background-color: #4CAF50;
-        color: white;
-        padding: 14px 20px;
-        margin: 8px 0;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-    }
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Jura|Ubuntu+Mono" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/one-page-wonder.css" rel="stylesheet">
 
-    .RegForm input[type=submit]:hover {
-        background-color: #318034;
-    }
+</head>
 
-    .RegForm h1 {
-        font-family: monospace;
-        font-size: 40px;
-        color: #4CAF50;
-    }
-
-    .RegForm input[type=text]{
-        width: 60%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        display: inline-block;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-
-    .RegForm input[type=email]{
-        width: 60%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        display: inline-block;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-
-    .RegForm input[type=password]{
-        width: 60%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        display: inline-block;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-
-	
-</style>
-<html>
-    <title>Регистрация нового пользователя</title>
+    <style>
+        .navbar{
+            background-color: darkorange;
+        }
+        
+        #navbar-brand-text {
+            color: white;
+            font-family: 'Jura', sans-serif;
+            font-size: 20px;
+        }
+        
+        #bs-example-navbar-collapse-1 a{
+            color: black;
+            font-family: 'Jura', sans-serif;
+            font-size: 18px;
+        }
+        
+        #bs-example-navbar-collapse-1 a:active{
+            color: white;
+            font-family: 'Jura', sans-serif;
+            font-size: 18px;
+        }
+        
+        #bs-example-navbar-collapse-1 a:hover{
+            color: white;
+        }
+        
+        #text-on-top{
+            color: black;
+            font-family: 'Ubuntu Mono', monospace;
+            opacity: 0.8;
+        }
+        
+        .header-image {
+             background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+        }
+        
+        .featurette-heading {
+             color: black;
+             font-family: 'Ubuntu Mono', monospace; 
+        }
+        
+        .lead {
+            color: black;
+            font-family: 'Ubuntu Mono', monospace; 
+        }
+        
+        #Register {
+            color: white;
+            font-family: 'Jura', sans-serif; 
+        }
+        
+        .panel-heading {
+            color: darkorange;
+            font-family: 'Jura', sans-serif;
+            font-size: 18px;
+        }
+        
+        #HaveAccount {
+            color: darkorange;
+            font-family: 'Jura', sans-serif;   
+        }
+        .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus {
+            color: darkorange;
+            background-color: darkorange;
+        }
+    </style>
 <body>
-		<form class="RegForm" action="/signup.php" method="POST">
-		<h1>Регистрация нового пользователя</h1>
 
-			  <p><strong>Логин(никнейм):</strong></p>
-			  <input type="text" name="login" id="login" value="<?php echo @$data['login'];?>">
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" id="navbar-brand-text" href="index.php">ukit-stadium.ru</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav" id="navbar-nav">
+                    <li>
+                        <a href="index.php">Главная</a>
+                    </li>
+                    <li>
+                        <a href="news.php">Новости</a>
+                    </li>
+                    <li>
+                        <a href="actions.php">Мероприятия</a>
+                    </li>
+                    <li>
+                        <a href="sections.php">Спортивные секции</a>
+                    </li>
+                     <li>
+                        <a href="rent.php">Аренда</a>
+                    </li>
+                    <li>
+                        <a href="about.php">Контакты</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="authorize.php"><span class="glyphicon glyphicon-log-in"></span> Войти</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <header class="header-image">
+        <div class="headline">
+            <div class="container" id="text-on-top">
+                <h1>Стадион "УКиТ"</h1>
+            </div>
+        </div>
+    </header>
+    <!-- Page Content -->
+    <div class="container">
+        <br>
+        <?php echo $error; 
+              echo $success;
+        ?>
+        <div class="panel panel-warning">
+          <div class="panel-heading"><b>Регистрация пользователя</b></div>
+              <div class="panel-body">
+                <form class="form-horizontal" method="post">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input id="login" type="text" class="form-control" name="login" placeholder="Логин" required>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        <input id="password" type="password" class="form-control" name="password" placeholder="Пароль" required>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+                                <script src="js/maskedinput.js"></script>
+                                <script type="text/javascript">
+                                    jQuery(function($){
+                                        $("#phone").mask("+7 (999) 999-99-99");
+                                    });
+                        </script>
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
+                        <input id="phone" type="phone" class="form-control" name="phone" placeholder="Мобильный телефон">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                        <input id="email" type="text" class="form-control" name="email" placeholder="E-Mail" required>
+                    </div>
+                    <hr>
+                    <!-- Доп. поля -->
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-triangle-righ"></i></span>
+                        <input id="surname" type="text" class="form-control" name="surname" placeholder="Фамилия" required>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-triangle-righ"></i></span>
+                        <input id="name" type="text" class="form-control" name="name" placeholder="Имя" required>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-triangle-righ"></i></span>
+                        <input id="patronymic" type="text" class="form-control" name="patronymic" placeholder="Отчество">
+                    </div>
+                    <br>
+                    <input type="submit" class="btn btn-warning btn-md" id="Register" name="Register" value="Регистрация">
+                    <a href="authorize.php" id="HaveAccount">Есть аккаунт?</a>
+                </form>
+              </div>
+        </div>
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <hr>
+                    <p>Copyright &copy; Eugene Starodubov, Ruslan Mamedbekov, 2017</p>
+                </div>
+            </div>
+        </footer>
+    </div>
 
-			  <p><strong>E-Mail:</strong></p>
-			  <input type="email" name="email" id="email" value="<?php echo @$data['email'];?>">
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
 
-			  <p><strong>Пароль:</strong></p>
-			  <input type="password" name="password" id="pass" value="<?php echo @$data['password'];?>">
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
 
-              <p><strong>Повторите пароль:</strong></p>
-			  <input type="password" name="password_2" id="pass_copy" value="<?php echo @$data['password_2'];?>">
-              <h1>Дополнительные данные</h1>
-              <p>Фамилия:</p>
-			  <input type="text" name="surname" id="surname" value="<?php echo @$data['surname'];?>">
-
-              <p>Имя:</p>
-			  <input type="text" name="name" id="name" value="<?php echo @$data['name'];?>">
-
-              <p>Отчество:</p>
-			  <input type="text" name="patronymic" id="patronymic" value="<?php echo @$data['patronymic'];?>">
-              <br>
-              <input type="submit" class="RegBtn" name="do_signup" value="Зарегистрироваться">
-
-		</form>
 </body>
+
 </html>

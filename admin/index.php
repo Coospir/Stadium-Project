@@ -1,7 +1,6 @@
 <?php 
     session_start();    
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,17 +15,17 @@
     <title>Стадион УКиТ</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
     <!-- FONTS -->
     <link href="https://fonts.googleapis.com/css?family=Jura|Ubuntu+Mono" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="css/one-page-wonder.css" rel="stylesheet">
+    <link href="../css/one-page-wonder.css" rel="stylesheet">
 
 </head>
 
     <style>
         .navbar{
-            background-color: #ff8c00;
+            background-color: darkorange;
         }
         
         #navbar-brand-text {
@@ -85,71 +84,21 @@
             color: darkorange;
             background-color: darkorange;
         }
-
         .container>h3 {
             color: black;
             font-family: 'Ubuntu Mono', monospace;
         }
-
+        .panel-heading {
+            color: darkorange;
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 18px;
+        }
         .panel-body {
             font-family: 'Ubuntu Mono', monospace; 
-            font-size: 16px;
-            width: auto;
-            height: 50%;
         }
-        
-        .checkbox {
-            width: 30px;
-        }
-        
-        .col-md-4>p {
-            font-family: 'Ubuntu Mono', monospace;  
-            font-size: 20px;
-            height: 10%;
-        }
-        
-        a {
-            font-family: 'Ubuntu Mono', monospace;  
-            font-size: 24px;
-            color: darkorange;
-        }
-
-        a:hover {
-            color: #111;
-            opacity: 0.8;
-        }
-
-        .panel-warning>.panel-heading {
-            font-family: 'Ubuntu Mono', monospace;  
-            font-size: 24px;
-            color: black;
-        }
-
-        .row>h1 {
-            font-family: 'Jura', sans-serif; 
-            font-size: 32px;
-        }
-        
-        
-        #BuyTicket {
-            color: white;
-            font-family: 'Jura', sans-serif;
-            height: 60px;
-            font-size: 32px;
-        }
-    
-        #card {
-            width: 100%;
-            height: 10%;
-        }
-    
-        input[type='checkbox'] {
-            background-color: red;
-            -webkit-appearance: default-button;
-        }
-
-        </style>
+    </style>
 <body>
+
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container-fluid">
@@ -167,36 +116,36 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav" id="navbar-nav">
                     <li>
-                        <a href="index.php">Главная</a>
+                        <a href="../index.php">Главная</a>
                     </li>
                     <li>
-                        <a href="news.php">Новости</a>
+                        <a href="../news.php">Новости</a>
                     </li>
                     <li>
-                        <a href="actions.php">Мероприятия</a>
+                        <a href="../actions.php">Мероприятия</a>
                     </li>
                     <li>
-                        <a href="sections.php">Спортивные секции</a>
+                        <a href="../sections.php">Спортивные секции</a>
                     </li>
                      <li>
-                        <a href="rent.php">Аренда</a>
+                        <a href="../rent.php">Аренда</a>
                     </li>
                     <li>
-                        <a href="contacts.php">Контакты</a>
+                        <a href="../about.php">Контакты</a>
                     </li>
                 </ul>
                 <?php
                     if (isset($_SESSION['logged_user'])) {
                 ?>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
+                    <li><a href="../logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
+                    <li><a href="../personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
                 </ul>
                 <?php } else { ?>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="authorize.php"><span class="glyphicon glyphicon-log-in"></span> Войти</a></li>
+                    <li><a href="../authorize.php"><span class="glyphicon glyphicon-log-in"></span> Войти</a></li>
                 </ul>   
                 <?php } ?>
             </div>
@@ -214,69 +163,21 @@
     </header>
     <!-- Page Content -->
     <div class="container">
-    <br>
-    <div class="row">
-        <h2 class="featurette-heading">Как приобрести билет на мероприятие?<br>
-                <span class="text-muted">Краткая инструкция.</span>
-            </h2>
         <br>
-        <br>
-        <br>
-                <div class="col-md-4">
-                    <img src="/img/step1.jpg" class="img-circle" alt="Cinque Terre" width="200" height="200">
-                    <br>
-                    <br>
-                    <p>Ознакомьтесь со списком ближайших концертов/спортивных игр. </p>
-                </div>
-                <div class="col-md-4">
-                    <img src="/img/step2.jpg" class="img-circle" alt="Cinque Terre" width="200" height="200">
-                    <br>
-                    <br>
-                    <p>Выберите подходящий для Вас сектор. </p>
-                </div>
-                <div class="col-md-4">
-                    <img src="/img/step3.jpg" class="img-circle" alt="Cinque Terre" width="200" height="200">
-                    <br>
-                    <br>
-                    <p>Оформите бронь билета, введя контактные данные. Попробуйте сами!</p>
-                </div>
-        </div>
-    <div class="container" id="panel">
-        <br>
-        <br>
-        <br>
-        <h2 class="featurette-heading">Ближайшие события на стадионе.
-        </h2>
+        <h3>Последние новости</h3>
         <hr>
-        <br>
-        <div class="row">
-        <?php
+          <?php
             $db = new PDO("mysql:dbname=Stadium_Site;host=127.0.0.1", "root", "");
             $db->exec("SET NAMES utf8");
-            $actions = $db->query("SELECT * FROM actions ORDER BY date ASC")->fetchAll(PDO::FETCH_ASSOC);
-            for($i = 0; $i < count($actions); $i++){
-                echo "
-                    <div class='col-md-4'>
-                        <form role='form' class='form-horizontal' method='post' action='buy_ticket.php'>
-                            <div class='panel panel-warning' id='card'>
-                                    <div class='panel-heading'>
-                                        ".$actions[$i]['title']."
-                                    </div>
-                                    <div class='panel-body'>
-                                        <p>".$actions[$i]['description']."</p>
-                                        <br>
-                                        <p><b><i>Когда: ".date_format(new DateTime($actions[$i]['date']),"d.m.Y")."</i></b></p>
-                                        <br>
-                                        <a href='buy_ticket.php?id=".$actions[$i]['id_action']."'>Бронировать билет</a>
-                                    </div>
-                            </div>
-                        </form>
-                    </div>
+            $news = $db->query("SELECT * FROM article ORDER BY date DESC")->fetchAll(PDO::FETCH_ASSOC);
+            for($i = 0; $i < count($news); $i++){
+                echo "<div class='panel panel-warning'>
+                          <div class='panel-heading'>".$news[$i]['title']."</div>
+                          <div class='panel-body'><i>".date_format(new DateTime($news[$i]['date']),"d.m.Y")."</i> <br><p>".$news[$i]['full_text']."</p></div>
+                      </div>
                 ";
             }
           ?>
-        </div>
-    </div>
         <!-- Footer -->
         <footer>
             <div class="row">

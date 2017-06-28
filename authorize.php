@@ -1,6 +1,62 @@
-<?php 
-    session_start();    
+<?php
+session_start();
+  require 'db.php';
+  if (!empty($_POST['LogIn'])) {
+        $login = !empty($_POST['login']) ? trim($_POST['login']) : null;
+        $pass = !empty($_POST['password']) ? md5(trim($_POST['password'])) : null;
+        $sql = "SELECT id_user, user_type, login, surname, name, patronymic, email, phone, password FROM users WHERE login = :login";
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->bindValue(':login', $login);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+        if($user == false) {
+            $error = '<div class = "alert alert-danger">Ошибка: неверный логин!</div>';
+        } else {
+        if($user['user_type'] == 0){
+                if(md5($pass) == md5($user['password'])) {
+                        $_SESSION['logged_user'] = $user['login'];
+                        $_SESSION['user_email'] = $user['email'];
+                        $_SESSION['user_phone'] = $user['phone'];
+                        $_SESSION['user_phone'] = $user['phone'];
+                        $_SESSION['user_surname'] = $user['surname'];
+                        $_SESSION['user_name'] = $user['name'];
+                        $_SESSION['user_patronymic'] = $user['patronymic'];
+                        $_SESSION['user_id'] = $user['id_user'];
+                        header('Location: /index.php');
+                        exit;
+                    } else {
+                        $error = '<div class = "alert alert-danger">Ошибка: неверный пароль!</div>';
+                    } 
+
+            } else {
+                $error = '<div class = "alert alert-danger">Непредвиденная серверная ошибка: повторите попытку позже.</div>';
+            }
+
+            if($user['user_type'] == 1) {
+                if(md5($pass) == md5($user['password'])) {
+                    $_SESSION['logged_user'] = $user['login'];
+                        $_SESSION['user_email'] = $user['email'];
+                        $_SESSION['user_phone'] = $user['phone'];
+                        $_SESSION['user_phone'] = $user['phone'];
+                        $_SESSION['user_surname'] = $user['surname'];
+                        $_SESSION['user_name'] = $user['name'];
+                        $_SESSION['user_patronymic'] = $user['patronymic'];
+                        $_SESSION['user_id'] = $user['id_user'];
+                        header('Location: admin/index.php');
+                        exit;
+                    } else {
+                        $error = '<div class = "alert alert-danger">Ошибка: неверный пароль!</div>';
+                    } 
+
+            } 
+                }
+        }
+       
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -70,56 +126,25 @@
             font-family: 'Ubuntu Mono', monospace; 
         }
         
-        #BtnSections {
-            color: white;
-            font-family: 'Jura', sans-serif;
+        #NoAccount {
+            color: darkorange;
+            font-family: 'Jura', sans-serif;   
         }
         
-        #BtnRent {
+        #LogIn {
             color: white;
             font-family: 'Jura', sans-serif; 
         }
         
-        .tab-content {
-            color: black;
-            font-family: 'Ubuntu Mono', monospace;
-        }
-        
-        .nav-tabs {
-            font-family: 'Ubuntu Mono', monospace;
-        }
-        
-        .container>h3 {
-            color: black;
-            font-family: 'Ubuntu Mono', monospace;
-        }
-        
-        a{
+        .panel-heading {
             color: darkorange;
+            font-family: 'Jura', sans-serif;
+            font-size: 18px;
         }
         .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus {
             color: darkorange;
             background-color: darkorange;
-        }  
-
-        .panel-warning>.panel-heading {
-            font-family: 'Ubuntu Mono', monospace;  
-            font-size: 24px;
-            color: black;
         }
-        
-        .panel-body>p {
-            font-family: 'Ubuntu Mono', monospace;  
-            font-size: 16px;
-            height: 10%;
-        }
-
-        .panel-body>a {
-            font-family: 'Jura', sans-serif;
-            font-size: 16px;
-            height: 10%;
-        }
-
     </style>
 <body>
 
@@ -158,26 +183,14 @@
                         <a href="about.php">Контакты</a>
                     </li>
                 </ul>
-                <?php
-                    if (isset($_SESSION['logged_user'])) {
-                ?>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
-                </ul>
-                <?php } else { ?>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="authorize.php"><span class="glyphicon glyphicon-log-in"></span> Войти</a></li>
-                </ul>   
-                <?php } ?>
+                </ul>
             </div>
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container -->
     </nav>
-    <!-- Full Width Image Header -->
     <header class="header-image">
         <div class="headline">
             <div class="container" id="text-on-top">
@@ -187,44 +200,29 @@
     </header>
     <!-- Page Content -->
     <div class="container">
-        <h2 class="featurette-heading">Записаться в спортивную секцию?<br>
-            <span class="text-muted">Легко! 
-                <br>Выберите секцию и запишитесь.</span>
-        </h2>       
-        <hr>
-        <div class="row">
-        <?php
-            $db = new PDO("mysql:dbname=Stadium_Site;host=127.0.0.1", "root", "");
-            $db->exec("SET NAMES utf8");
-            $sections = $db->query("SELECT * FROM Sections ORDER BY sport ASC")->fetchAll(PDO::FETCH_ASSOC);
-            for($i = 0; $i < count($sections); $i++){
-                echo "
-                    <div class='col-md-4'>
-                        <form role='form' class='form-horizontal' method='post' action='buy_ticket.php'>
-                            <div class='panel panel-warning' id='card'>
-                                    <div class='panel-heading'>
-                                        ".$sections[$i]['sport']."
-                                    </div>
-                                    <div class='panel-body'>
-                                        <p>".$sections[$i]['description']."</p>
-                                        <br>
-                                        <p><b>Преподаватель: </b>".$sections[$i]['trainer']."</p>
-                                        <br>
-                                        <p><b>Стоимость за занятие: </b>".$sections[$i]['cost_per_lesson']." руб.</p>
-                                        <br>
-                                        <p><b>Телефон для справок: </b>".$sections[$i]['phone']."</p>
-                                        <br>
-                                        <a href='go_section.php?id=".$sections[$i]['id_section']."'>Запись в секцию</a>
-                                    </div>
-                            </div>
-                        </form>
-                    </div>
-                ";
-            }
-          ?>
+        <br>
+        <?php echo $error; 
+              echo $success;
+        ?>
+        <div class="panel panel-warning">
+          <div class="panel-heading"><b>Авторизация пользователя</b></div>
+              <div class="panel-body">
+                <form class="form-horizontal" method="post">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                    <input id="login" type="text" class="form-control" name="login" placeholder="Логин">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                    <input id="password" type="password" class="form-control" name="password" placeholder="Пароль">
+                </div>
+                <br>
+                <input type="submit" class="btn btn-warning btn-md" id="LogIn" name="LogIn" value="Войти в систему">
+                <a href="signup.php" id="NoAccount">Не зарегистрированы?</a>
+                </form>
+              </div>
         </div>
-
-
         <!-- Footer -->
         <footer>
             <div class="row">
