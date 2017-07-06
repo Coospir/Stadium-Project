@@ -1,4 +1,5 @@
 <?php
+
 session_start();
   require 'db.php';
   if (!empty($_POST['LogIn'])) {
@@ -17,14 +18,19 @@ session_start();
         } else {
         if($user['user_type'] == 0){
                 if(md5($pass) == md5($user['password'])) {
-                        $_SESSION['logged_user'] = $user['login'];
-                        $_SESSION['user_email'] = $user['email'];
-                        $_SESSION['user_phone'] = $user['phone'];
-                        $_SESSION['user_phone'] = $user['phone'];
-                        $_SESSION['user_surname'] = $user['surname'];
-                        $_SESSION['user_name'] = $user['name'];
-                        $_SESSION['user_patronymic'] = $user['patronymic'];
-                        $_SESSION['user_id'] = $user['id_user'];
+
+                        $_SESSION['logged_user'] = array(
+                            "email" => $user['email'],
+                            "phone" => $user['phone'],
+                            "surname" => $user['surname'],
+                            "name" => $user['name'],
+                            "patronymic" => $user['patronymic'],
+                            "user_id" => $user['id_user'],
+                            "login" => $user['login'],
+                            "type" => $user['user_type']
+                        );
+
+                        echo $_SESSION['logged_user']['id_user'];
                         header('Location: /index.php');
                         exit;
                     } else {
@@ -37,14 +43,18 @@ session_start();
 
             if($user['user_type'] == 1) {
                 if(md5($pass) == md5($user['password'])) {
-                    $_SESSION['logged_user'] = $user['login'];
-                        $_SESSION['user_email'] = $user['email'];
-                        $_SESSION['user_phone'] = $user['phone'];
-                        $_SESSION['user_phone'] = $user['phone'];
-                        $_SESSION['user_surname'] = $user['surname'];
-                        $_SESSION['user_name'] = $user['name'];
-                        $_SESSION['user_patronymic'] = $user['patronymic'];
-                        $_SESSION['user_id'] = $user['id_user'];
+
+                        $_SESSION['logged_user'] = array(
+                            "email" => $user['email'],
+                            "phone" => $user['phone'],
+                            "surname" => $user['surname'],
+                            "name" => $user['name'],
+                            "patronymic" => $user['patronymic'],
+                            "user_id" => $user['id_user'],
+                            "login" => $user['login'],
+                            "type" => $user['user_type']
+                        );
+
                         header('Location: admin/index.php');
                         exit;
                     } else {
@@ -114,6 +124,7 @@ session_start();
         
         .header-image {
              background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+             background-attachment: fixed;
         }
         
         .featurette-heading {

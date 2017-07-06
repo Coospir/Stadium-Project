@@ -58,6 +58,7 @@
         
         .header-image {
              background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+             background-attachment: fixed;
         }
         
         .featurette-heading {
@@ -124,7 +125,7 @@
                     <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
+                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user']['login'] ?></a></li>
                 </ul>
                 <?php } else { ?>
                 <ul class="nav navbar-nav navbar-right">
@@ -206,7 +207,7 @@
             $(window).scroll(function(){
                 var tp = $(window).scrollTop();
                 
-                $("#parll").css({"transform" : "translate(0%, " + tp/5 + "%)"});
+                $("#parll").css({"transform" : "translate(0%, " + tp/10 + "%)"});
             });
             
             

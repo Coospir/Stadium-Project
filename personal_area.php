@@ -2,11 +2,16 @@
     session_start();  
     require_once "db.php";
 
-    $data = $pdo->prepare("select * from ActionsPlacesUsers apu INNER JOIN actions a ON apu.action_id=a.id_action WHERE apu.id_user=:u");
-    $data->bindValue(":u", $_SESSION['user_id']);
-
+    $data = $pdo->prepare("select * from ActionsPlacesUsers apu INNER JOIN actions a ON apu.action_id=a.id_action INNER JOIN Places p ON apu.place_id = p.id_place WHERE apu.id_user=:u"); 
+    $data->bindValue(":u", $_SESSION['logged_user']['user_id']);
     if ($data->execute()) {
-        $user_data = $data->fetchAll(PDO::FETCH_ASSOC)[0]; 
+        $user_data = $data->fetchAll(PDO::FETCH_ASSOC); 
+    }
+
+    $db_sections = $pdo->prepare("select * from `SectionsUsers` su INNER JOiN `Users` u ON su.user_id=u.id_user INNER JOIN `Sections` s ON su.section_id=s.id_section WHERE u.id_user=:u_id");
+    $db_sections->bindValue(":u_id", $_SESSION['logged_user']['user_id']);
+    if ($db_sections->execute()) {
+        $sections = $db_sections->fetchAll(PDO::FETCH_ASSOC);
     }
 
 ?>
@@ -67,6 +72,7 @@
         
         .header-image {
              background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+             background-attachment: fixed;
         }
         
         .featurette-heading {
@@ -143,7 +149,7 @@
                     <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
+                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user']['login'] ?></a></li>
                 </ul>
                 <?php } else { ?>
                 <ul class="nav navbar-nav navbar-right">
@@ -170,16 +176,43 @@
               <div class="panel-body">
                     <i>Общая информация о пользователе</i>
                     <hr>
-                    <p><b>Логин пользователя: </b><?php echo $_SESSION['logged_user']; ?></p>
-                    <p><b>Электронный адрес аккаунта: </b><?php echo $_SESSION['user_email']; ?></p>
-                    <p><b>Мобильный телефон: </b> <?php echo $_SESSION['user_phone']; ?> </p>
+                    <p><b>Логин пользователя: </b><?php echo $_SESSION['logged_user']['login']; ?></p>
+                    <p><b>Электронный адрес аккаунта: </b><?php echo $_SESSION['logged_user']['email']; ?></p>
+                    <p><b>Мобильный телефон: </b> <?php echo $_SESSION['logged_user']['phone']; ?> </p>
                     <hr>
                     <p><i>Дополнительная информация о пользователе</i></p>
-                    <p><b>Фамилия: </b> <?php echo $_SESSION['user_surname']; ?> 
-                    <p><b>Имя: </b> <?php echo $_SESSION['user_name']; ?> 
-                    <p><b>Отчество: </b> <?php echo $_SESSION['user_patronymic']; ?> 
-                    <p><b>Спортивные секции: </b></p>
-                    <p><b>Купленные билеты: </b><?= "куплен билет на мероприятие: ".$user_data['title']." - (".date_format(new DateTime($user_data['date']),"d.m.Y").")." ?></p>
+                    <p><b>Фамилия: </b> <?php echo $_SESSION['logged_user']['surname']; ?> 
+                    <p><b>Имя: </b> <?php echo $_SESSION['logged_user']['name']; ?> 
+                    <p><b>Отчество: </b> <?php echo $_SESSION['logged_user']['patronymic']; ?> 
+                    <p><b>Спортивные секции: </b><?php
+
+                        foreach ($sections as $section) {
+                            echo $section['sport'].", ";
+                        }
+
+
+                    ?></p>
+                    <p><b>Купленные билеты: </b>
+                        <?php
+                            echo "<table class='table table-striped'>";
+                            echo "<tr>";
+                            echo "<td>Мероприятие</td>";
+                            echo "<td>Место</td>";
+                            echo "<td>Дата</td>";
+                            echo "</tr>";
+
+                            foreach ($user_data as $user_date) {
+
+                                echo "<tr>";
+                                echo "<td>".$user_date['title']."</td>";
+                                echo "<td>".$user_date['place_number']."</td>";
+                                echo "<td>".date_format(new DateTime($user_date['date']),"d.m.Y")."</td>";
+                                echo "</tr>";
+                            }
+
+                            echo "</table>"
+                         ?>
+                    </p>
               </div>
         </div>
         <!-- Footer -->

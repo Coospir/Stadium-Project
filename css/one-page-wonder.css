@@ -8,6 +8,19 @@ body {
     margin-top: 50px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 }
 
+.featurette {
+    padding: 15px;
+}
+
+.featurette-image {
+    transition-property: all;
+    transition-duration: 0.3s;
+}
+
+.featurette-image:hover {
+    box-shadow: 0px 0px 32px darkorange;
+}
+
 .header-image {
     display: block;
     width: 100%;

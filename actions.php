@@ -59,6 +59,7 @@
         
         .header-image {
              background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+             background-attachment: fixed;
         }
         
         .featurette-heading {
@@ -192,7 +193,7 @@
                     <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
+                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user']['login'] ?></a></li>
                 </ul>
                 <?php } else { ?>
                 <ul class="nav navbar-nav navbar-right">
@@ -256,7 +257,7 @@
             $actions = $db->query("SELECT * FROM actions ORDER BY date ASC")->fetchAll(PDO::FETCH_ASSOC);
             for($i = 0; $i < count($actions); $i++){
                 echo "
-                    <div class='col-md-4'>
+                    <div class='col-md-5'>
                         <form role='form' class='form-horizontal' method='post' action='buy_ticket.php'>
                             <div class='panel panel-warning' id='card'>
                                     <div class='panel-heading'>

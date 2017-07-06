@@ -30,14 +30,12 @@
             $tel = $_POST['tel'];
 
             if (!empty($places)) {
-
+            /*
                 echo "Second name: ".$sn."<br>";
                 echo "First name: ".$fn."<br>";
                 echo "Tel: ".$tel."<br>";
-
+            */   
                 for ($i = 0; $i < count($places); $i++) {
-                    echo "Place №$i have id is ".$places[$i]."<br>";
-                    //insert into [table] () VALUES ()
                     $sql = "call RegistrationToAction(:id_action, :id_place, :m_surname, :m_name, :m_phone, :user_id)";
                     $stmt = $pdo->prepare($sql);
                     $stmt -> bindValue(':id_action', $id);    
@@ -45,15 +43,19 @@
                     $stmt -> bindValue(':m_surname', $sn);
                     $stmt -> bindValue(':m_name', $fn);
                     $stmt -> bindValue(':m_phone', $tel);
-                    $stmt -> bindValue(':user_id', $_SESSION['user_id']);
+                    $stmt -> bindValue(':user_id', $_SESSION['logged_user']['user_id']);
                     $result = $stmt->execute();
-                    print_r($stmt->errorInfo());
 
+                    /*
+                    print_r($_SESSION['logged_user']);
+                    print_r($stmt->errorInfo());
+                    */
+                    
                     if($result)
                     {
-                        $success = '<div class = "alert alert-success">Операция бронирования прошла успешно! <a href="index.php">На главную.</a></div>';
+                        $success = '<div class = "alert alert-success">Операция бронирования прошла успешно! На мобильный телефон '.$tel.' отправлена информация о билете. <a href="index.php">На главную.</a></div>';
                     } else {
-                        $error = '<div class = "alert alert-danger">Ошибка: проверьте данные!</div>';
+                        $error = '<div class = "alert alert-danger">Ошибка: Необходимо войти в систему для покупки билета!</div>';
                     }
 
                 }
@@ -125,6 +127,7 @@
         
         .header-image {
              background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+             background-attachment: fixed;
         }
         
         .featurette-heading {
@@ -287,11 +290,11 @@
                     <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
+                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user']['login'] ?></a></li>
                 </ul>
                 <?php } else { ?>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="authoriz©e.php"><span class="glyphicon glyphicon-log-in"></span> Войти</a></li>
+                    <li><a href="authorize.php"><span class="glyphicon glyphicon-log-in"></span> Войти</a></li>
                 </ul>   
                 <?php } ?>
             </div>

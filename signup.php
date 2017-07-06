@@ -141,6 +141,7 @@
         
         .header-image {
              background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+             background-attachment: fixed;
         }
         
         .featurette-heading {
@@ -259,7 +260,7 @@
                     <br>
                     <div class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                        <input id="email" type="text" class="form-control" name="email" placeholder="E-Mail" required>
+                        <input id="email" type="email" class="form-control" name="email" placeholder="E-Mail" required>
                     </div>
                     <hr>
                     <!-- Доп. поля -->

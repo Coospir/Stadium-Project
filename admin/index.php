@@ -1,27 +1,53 @@
 <?php 
-    session_start();    
+    session_start();
+    require_once "../db.php";
+
+    if (isset($_SESSION['logged_user']) && ($_SESSION['logged_user']['type'] == 1)) {
+
+        if (!empty($_POST['addNewsButton'])) {
+
+            $title = !empty($_POST['title']) ? trim($_POST['title']) : null;
+            $text = !empty($_POST['text']) ? trim($_POST['text']) : null;
+            $date = !empty($_POST['date_p']) ? trim($_POST['date_p']) : null;
+
+            $add = $pdo->prepare("INSERT INTO `article` (`title`, `full_text`, `date`) VALUES (:title, :txt, :dt)");
+            $add->bindValue(':title', $title);
+            $add->bindValue(':txt', $text);
+            $add->bindValue(':dt', $date);
+
+            if ($add->execute()) {
+                $success = '<div class = "alert alert-success">Новостной блок успешно создан! <a href="news.php">На страницу "Новости".</a></div>';
+            } else {
+                $error = '<div class = "alert alert-danger">Ошибка!</div>';    
+            }
+        }
+
+    } else {
+        redirect("../authorize.php");
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+    <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
 
-    <title>Стадион УКиТ</title>
+        <title>Стадион УКиТ</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <!-- FONTS -->
-    <link href="https://fonts.googleapis.com/css?family=Jura|Ubuntu+Mono" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="../css/one-page-wonder.css" rel="stylesheet">
+        <!-- Bootstrap Core CSS -->
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <!-- FONTS -->
+        <link href="https://fonts.googleapis.com/css?family=Jura|Ubuntu+Mono" rel="stylesheet">
+        <!-- Custom CSS -->
+        <link href="../css/one-page-wonder.css" rel="stylesheet">
 
-</head>
+    </head>
 
     <style>
         .navbar{
@@ -141,7 +167,7 @@
                     <li><a href="../logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="../personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
+                    <li><a href="../personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user']['login'] ?></a></li>
                 </ul>
                 <?php } else { ?>
                 <ul class="nav navbar-nav navbar-right">
@@ -163,21 +189,37 @@
     </header>
     <!-- Page Content -->
     <div class="container">
-        <br>
-        <h3>Последние новости</h3>
+       <h2 class="featurette-heading">Панель администратора
+            <small><a href="logout.php">Выйти</a></small>
+        </h2>
         <hr>
-          <?php
-            $db = new PDO("mysql:dbname=Stadium_Site;host=127.0.0.1", "root", "");
-            $db->exec("SET NAMES utf8");
-            $news = $db->query("SELECT * FROM article ORDER BY date DESC")->fetchAll(PDO::FETCH_ASSOC);
-            for($i = 0; $i < count($news); $i++){
-                echo "<div class='panel panel-warning'>
-                          <div class='panel-heading'>".$news[$i]['title']."</div>
-                          <div class='panel-body'><i>".date_format(new DateTime($news[$i]['date']),"d.m.Y")."</i> <br><p>".$news[$i]['full_text']."</p></div>
-                      </div>
-                ";
-            }
-          ?>
+        <!-- Контент -->
+        <section class="row">
+            <div class="panel panel-warning">
+              <div class="panel-heading">Новости</div>
+                  <div class="panel-body">
+                    <div class="col-md-12">
+                        <form class="form-horizontal" method="post">
+                            <div class="form-group">
+                                <label for="">Заголовок новости</label>
+                                <input type="text" name="title" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Текст</label>
+                                <textarea name="text" class="form-control" rows="15"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Дата публикации</label>
+                                <input type="date" name="date_p" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" name="addNewsButton" value="Добавить новостной блок" class="btn btn-warning">
+                            </div>
+                        </form>
+                    </div>    
+                  </div>
+            </div>
+        </section>
         <!-- Footer -->
         <footer>
             <div class="row">

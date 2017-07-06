@@ -58,6 +58,7 @@
         
         .header-image {
              background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+             background-attachment: fixed;
         }
         
         .featurette-heading {
@@ -89,12 +90,17 @@
             font-family: 'Ubuntu Mono', monospace;
         }
         .panel-heading {
-            color: darkorange;
             font-family: 'Ubuntu Mono', monospace;
-            font-size: 18px;
+            font-size: 21px;
         }
+
         .panel-body {
             font-family: 'Ubuntu Mono', monospace; 
+            font-size: 18px;
+        }
+
+        .panel {
+            color: black;
         }
     </style>
 <body>
@@ -141,7 +147,7 @@
                     <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
+                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user']['login'] ?></a></li>
                 </ul>
                 <?php } else { ?>
                 <ul class="nav navbar-nav navbar-right">
@@ -164,16 +170,17 @@
     <!-- Page Content -->
     <div class="container">
         <br>
-        <h3>Последние новости</h3>
+        <h2 class="featurette-heading">Последние новости 
+        </h2> 
         <hr>
           <?php
             $db = new PDO("mysql:dbname=Stadium_Site;host=127.0.0.1", "root", "");
             $db->exec("SET NAMES utf8");
             $news = $db->query("SELECT * FROM article ORDER BY date DESC")->fetchAll(PDO::FETCH_ASSOC);
             for($i = 0; $i < count($news); $i++){
-                echo "<div class='panel panel-warning'>
+                echo "<div class='panel panel-danger'>
                           <div class='panel-heading'>".$news[$i]['title']."</div>
-                          <div class='panel-body'><i>".date_format(new DateTime($news[$i]['date']),"d.m.Y")."</i> <br><p>".$news[$i]['full_text']."</p></div>
+                          <div class='panel-body'><b>".date_format(new DateTime($news[$i]['date']),"d.m.Y")."</b> <p>".$news[$i]['full_text']."</p></div>
                       </div>
                 ";
             }

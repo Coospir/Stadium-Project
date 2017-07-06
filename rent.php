@@ -12,7 +12,7 @@
 
         $add = $pdo->prepare("call NewRenting(:user_id, :m_surname, :m_name, :m_phone, :m_email, :m_cost)");
 
-        $add->bindValue(":user_id", $_SESSION['user_id']);
+        $add->bindValue(":user_id", $_SESSION['logged_user']['user_id']);
         $add->bindValue(":m_surname", $sn);
         $add->bindValue(":m_name", $fn);
         $add->bindValue(":m_phone", $tel);
@@ -22,7 +22,7 @@
         if ($add->execute()) {
             $success = '<div class = "alert alert-success">Операция аренды прошла успешно! <a href="index.php">На главную.</a></div>';
         } else {
-            $error = '<div class = "alert alert-danger">Ошибка: проверьте данные!</div>';    
+            $error = '<div class = "alert alert-danger">Ошибка: Необходимо войти в систему для осуществления аренды стадиона.</div>';    
         }
     }
 
@@ -84,6 +84,7 @@
         
         .header-image {
              background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+             background-attachment: fixed;
         }
         
         .featurette-heading {
@@ -154,6 +155,12 @@
             font-family: 'Jura', sans-serif;
             font-size: 32px; 
         }
+
+        .modal-body {
+            font-family: 'Ubuntu Mono', monospace; 
+            font-size: 16px;
+        }
+
     </style>
 <body>
 
@@ -199,7 +206,7 @@
                     <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
+                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user']['login'] ?></a></li>
                 </ul>
                 <?php } else { ?>
                 <ul class="nav navbar-nav navbar-right">
@@ -324,16 +331,16 @@
                     </div>
                   </div>
                 </div> 
-            </div> 
-            <!-- Footer -->
-            <footer>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <hr>
-                        <p>Copyright &copy; Eugene Starodubov, Ruslan Mamedbekov, 2017</p>
+                <!-- Footer -->
+                <footer>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <hr>
+                            <p>Copyright &copy; Eugene Starodubov, Ruslan Mamedbekov, 2017</p>
+                        </div>
                     </div>
-                </div>
-            </footer>
+                </footer>
+            </div> 
         </div>
         </div>
         </div>

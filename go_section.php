@@ -6,13 +6,12 @@
     $id = (int)$_GET['id'];
     
     if ($id > 0) {
-        $md = $pdo->prepare("select * from `SectionsUsers` su 
-             INNER JOIN `Users` u ON u.id_user = su.user_id
-            where `section_id`= :id");
+        $md = $pdo->prepare("select * from `Sections` where `id_section`=:id");
         $md->bindValue(":id", $id);
 
         if ($md->execute()) {
-            $data = $md->fetchAll(PDO::FETCH_ASSOC);
+            $data = $md->fetchAll(PDO::FETCH_ASSOC)[0];
+
         } else {
             echo __LINE__; // Вывод строчки кода
         }
@@ -21,33 +20,32 @@
             $fn = $_POST['fn'];
             $tel = $_POST['tel'];
             $email = $_POST['email'];
-
+            /*
                 echo "Second name: ".$sn."<br>";
                 echo "First name: ".$fn."<br>";
                 echo "Tel: ".$tel."<br>";
                 echo "Email: ".$email."<br>";
-
-                for ($i = 0; $i < count($data); $i++) {
+            */
                     //insert into [table] () VALUES ()
-                    $sql = "call RegistrationToSection(:id_section, :user_id, :m_surname, :m_name, :m_phone, :m_email)";
+                    $sql = "INSERT INTO SectionsUsers (section_id, user_id, surname, name, phone, email) VALUES (:section_id, :user_id, :m_surname, :m_name, :m_phone, :m_email)";
                     $stmt = $pdo->prepare($sql);
                     $stmt -> bindValue(':section_id', $id);    
                     $stmt -> bindValue(':m_surname', $sn);
                     $stmt -> bindValue(':m_name', $fn);
                     $stmt -> bindValue(':m_phone', $tel);
                     $stmt -> bindValue(':m_email', $email);
-                    $stmt -> bindValue(':user_id', $_SESSION['user_id']);
+                    $stmt -> bindValue(':user_id', $_SESSION['logged_user']['user_id']);
                     $result = $stmt->execute();
-                    print_r($stmt->errorInfo());
+                    //print_r($_SESSION['logged_user']);
 
                     if($result)
                     {
-                        $success = '<div class = "alert alert-success">Операция записи в секцию прошла успешно! <a href="index.php">На главную.</a></div>';
+                        $success = '<div class = "alert alert-success">Операция записи в секцию прошла успешно!<a href="index.php">На главную.</a></div>';
                     } else {
-                        $error = '<div class = "alert alert-danger">Ошибка: проверьте данные!</div>';
+                        //print_r($stmt->errorInfo());
+                        $error = '<div class = "alert alert-danger">Ошибка: Необходимо войти в систему для записи в секцию.</div>';
                     }
 
-                }
 
             } 
 
@@ -112,6 +110,7 @@
         
         .header-image {
              background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+             background-attachment: fixed;
         }
         
         .featurette-heading {
@@ -274,7 +273,7 @@
                     <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
+                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user']['login'] ?></a></li>
                 </ul>
                 <?php } else { ?>
                 <ul class="nav navbar-nav navbar-right">

@@ -59,6 +59,7 @@
         
         .header-image {
              background-image:url('http://rev3tri.wpengine.netdna-cdn.com/wp-content/uploads/2015/10/slide1.jpg');
+             background-attachment: fixed;
         }
         
         .featurette-heading {
@@ -130,7 +131,7 @@
                         <a href="rent.php">Аренда</a>
                     </li>
                     <li>
-                        <a href="contacts.php">Контакты</a>
+                        <a href="about.php">Контакты</a>
                     </li>
                 </ul>
                 <?php
@@ -140,7 +141,7 @@
                     <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Выйти</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user'] ?></a></li>
+                    <li><a href="personal_area.php"><span class="glyphicon glyphicon-user"></span> Приветствую, <?php echo $_SESSION['logged_user']['login'] ?></a></li>
                 </ul>
                 <?php } else { ?>
                 <ul class="nav navbar-nav navbar-right">
@@ -175,7 +176,7 @@
                 <strong>Стадион "УКиТ"</strong><br>
                 г. Москва<br>
                 Костомаровская наб., д.29<br>
-                E-Mail: <b>priemka@mgkit.ru"></b><br>
+                E-Mail: <b>priemka@mgkit.ru</b><br>
                 105120<br>
                 <abbr title="Наш телефон">Телефон:</abbr> <b>8(925)743-11-91</b>
             </address>
